@@ -48,5 +48,14 @@ steps:
 
   - script: pip install -r requirements.txt
     displayName: 'Install requirements'
+  
+  - bash: mkdir results
+    displayName: 'Prepare result directory'
 
-  - script: python bench.py -o $(imageName)_$(python.version).json
+  - script: python bench.py -o results/$(imageName)_$(python.version).json
+    displayName: 'Run benchmarks'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: results
+
