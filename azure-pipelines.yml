@@ -1,0 +1,52 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+strategy:
+  matrix:
+    linux_27:
+      imageName: 'ubuntu-16.04'
+      python.version: '2.7'
+    linux_36:
+      imageName: 'ubuntu-16.04'
+      python.version: '3.6'
+    linux_37:
+      imageName: 'ubuntu-16.04'
+      python.version: '3.7'
+    mac_27:
+      imageName: 'macos-10.13'
+      python.version: '2.7'
+    mac_36:
+      imageName: 'macos-10.13'
+      python.version: '3.6'
+    mac_37:
+      imageName: 'macos-10.13'
+      python.version: '3.7'
+    windows_27:
+      imageName: 'vs2017-win2016'
+      python.version: '2.7'
+    windows_36:
+      imageName: 'vs2017-win2016'
+      python.version: '3.6'
+    windows_37:
+      imageName: 'vs2017-win2016'
+      python.version: '3.7'
+  maxParallel: 3
+
+pool:
+  vmImage: $(imageName)
+
+steps:
+- task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+- script: python -m pip install --upgrade pip setuptools wheel
+  displayName: 'Install tools'
+
+- script: pip install -r requirements.txt
+  displayName: 'Install requirements'
+
+- script: python bench.py -o $(imageName)_$(python.version).json
